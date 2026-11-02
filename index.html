@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>重生之你是什么动物的尿</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(160deg, #fffbe9 0%, #ffeecf 40%, #ffd9e8 100%);
+    min-height: 100vh;
+    color: #3a2e1f;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 24px 16px 60px;
+  }
+  .wrap { width: 100%; max-width: 560px; }
+
+  /* ===== 首页 ===== */
+  .cover { text-align: center; padding-top: 6vh; animation: fadeUp .6s ease; }
+  .cover .drop { font-size: 84px; display: inline-block; animation: bob 2.4s ease-in-out infinite; filter: drop-shadow(0 12px 18px rgba(255,180,60,.35)); }
+  .cover h1 {
+    font-size: 40px; line-height: 1.25; margin: 18px 0 10px;
+    background: linear-gradient(90deg, #e8590c, #d6336c, #7048e8);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    font-weight: 900; letter-spacing: 2px;
+  }
+  .cover .sub { color: #8a6d3b; font-size: 15px; margin-bottom: 8px; }
+  .cover .tagline {
+    margin: 22px auto; max-width: 420px; background: rgba(255,255,255,.7);
+    border: 1px dashed #e0a34e; border-radius: 16px; padding: 14px 18px;
+    font-size: 14px; color: #7a5c2e; line-height: 1.8;
+  }
+  .btn-main {
+    margin-top: 26px; border: none; cursor: pointer;
+    background: linear-gradient(135deg, #f59f00, #e8590c);
+    color: #fff; font-size: 20px; font-weight: 700; letter-spacing: 4px;
+    padding: 16px 58px; border-radius: 999px;
+    box-shadow: 0 10px 24px rgba(232,89,12,.35);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-main:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 14px 30px rgba(232,89,12,.45); }
+  .btn-main:active { transform: scale(.97); }
+  .meta-note { margin-top: 16px; font-size: 12px; color: #b08d55; }
+
+  /* ===== 答题页 ===== */
+  .progress-row { display: flex; align-items: center; gap: 10px; margin: 8px 0 6px; }
+  .progress-text { font-size: 13px; color: #a07830; font-weight: 600; white-space: nowrap; }
+  .bar { flex: 1; height: 10px; background: rgba(255,255,255,.8); border-radius: 999px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,.08); }
+  .bar-fill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, #ffd43b, #e8590c, #d6336c); transition: width .4s cubic-bezier(.22,1,.36,1); }
+  .q-card {
+    background: rgba(255,255,255,.88); border-radius: 22px;
+    box-shadow: 0 12px 32px rgba(180,120,40,.16);
+    padding: 30px 26px; margin-top: 18px;
+    animation: fadeUp .45s ease;
+  }
+  .q-no { font-size: 12px; color: #cf9a3f; font-weight: 700; letter-spacing: 3px; margin-bottom: 10px; }
+  .q-title { font-size: 21px; font-weight: 800; line-height: 1.6; margin-bottom: 22px; }
+  .opt {
+    display: flex; align-items: flex-start; gap: 12px;
+    width: 100%; text-align: left; cursor: pointer;
+    background: #fffaf0; border: 2px solid #f3e2bd; border-radius: 14px;
+    padding: 14px 16px; margin-bottom: 12px;
+    font-size: 15px; line-height: 1.55; color: #4a3a22;
+    transition: all .15s ease; font-family: inherit;
+  }
+  .opt:hover { border-color: #f2a93b; background: #fff4d6; transform: translateX(4px); }
+  .opt:active { transform: scale(.98); }
+  .opt .tag {
+    flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+    background: #f2c14e; color: #fff; font-weight: 800; font-size: 13px;
+    display: flex; align-items: center; justify-content: center; margin-top: 1px;
+  }
+
+  /* ===== 结果页 ===== */
+  .result-card {
+    background: rgba(255,255,255,.92); border-radius: 26px;
+    box-shadow: 0 16px 44px rgba(180,120,40,.2);
+    padding: 36px 28px; margin-top: 24px; text-align: center;
+    animation: popIn .55s cubic-bezier(.34,1.56,.64,1);
+  }
+  .result-kicker { font-size: 13px; color: #b08543; letter-spacing: 5px; font-weight: 700; }
+  .result-emoji { font-size: 96px; margin: 14px 0 4px; display: inline-block; animation: bob 2.8s ease-in-out infinite; }
+  .result-name { font-size: 36px; font-weight: 900; margin-top: 6px; }
+  .result-title {
+    display: inline-block; margin-top: 10px; padding: 7px 20px; border-radius: 999px;
+    font-size: 14px; font-weight: 700; color: #fff;
+  }
+  .bottle { margin: 26px auto 4px; width: 120px; }
+  .result-rank { margin-top: 14px; font-size: 13px; color: #9c7a3f; }
+  .section {
+    text-align: left; margin-top: 24px; background: #fffaf0;
+    border-radius: 16px; padding: 18px 20px; border: 1px solid #f3e2bd;
+  }
+  .section h3 { font-size: 15px; font-weight: 800; margin-bottom: 10px; color: #b35c00; display: flex; align-items: center; gap: 8px; }
+  .section p { font-size: 14.5px; line-height: 1.9; color: #5a472a; }
+  .stats { margin-top: 24px; text-align: left; }
+  .stat-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .stat-label { width: 64px; font-size: 13px; font-weight: 700; color: #8a6428; flex-shrink: 0; }
+  .stat-bar { flex: 1; height: 12px; background: #f3e6c8; border-radius: 999px; overflow: hidden; }
+  .stat-fill { height: 100%; border-radius: 999px; animation: growBar 1s cubic-bezier(.22,1,.36,1) both; }
+  .stat-val { width: 44px; text-align: right; font-size: 12px; color: #a07830; font-weight: 700; }
+  .btn-row { display: flex; gap: 14px; justify-content: center; margin-top: 30px; flex-wrap: wrap; }
+  .btn-sec {
+    border: 2px solid #e8a33d; background: #fff; color: #c47b0e;
+    font-size: 15px; font-weight: 700; padding: 12px 30px; border-radius: 999px;
+    cursor: pointer; transition: all .15s ease; font-family: inherit;
+  }
+  .btn-sec:hover { background: #fff4d6; transform: translateY(-2px); }
+  .share-note { margin-top: 18px; font-size: 12px; color: #bb9355; }
+
+  .hidden { display: none !important; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes popIn { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
+  @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  @keyframes growBar { from { width: 0 !important; } }
+  @media (max-width: 480px) { .cover h1 { font-size: 30px; } .q-title { font-size: 18px; } .result-name { font-size: 28px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 首页 -->
+  <div id="page-cover" class="cover">
+    <div class="drop">💧</div>
+    <h1>重生之<br>你是什么动物的尿</h1>
+    <div class="sub">—— 一滴尿的命运，由此刻定 ——</div>
+    <div class="tagline">
+      传说每个灵魂转世前，都要在轮回中转最后一道弯：<br>
+      有人投胎成人，有人成了猫，有人……<br>
+      成了某种动物排出来的那泡尿。<br>
+      13 道抽象题，鉴定你的本命尿型。
+    </div>
+    <button class="btn-main" onclick="startQuiz()">开始鉴定</button>
+    <div class="meta-note">本测试纯属抽象娱乐 · 共 13 题 · 24 种尿型等你认领</div>
+  </div>
+
+  <!-- 答题 -->
+  <div id="page-quiz" class="hidden">
+    <div class="progress-row">
+      <div class="progress-text" id="progress-text">第 1 / 13 题</div>
+      <div class="bar"><div class="bar-fill" id="bar-fill"></div></div>
+    </div>
+    <div class="q-card" id="q-card"></div>
+  </div>
+
+  <!-- 结果 -->
+  <div id="page-result" class="hidden">
+    <div class="result-card" id="result-card"></div>
+  </div>
+
+</div>
+
+<script>
+/* ================= 尿型数据库（24 种） ================= */
+const ANIMALS = [
+  { key:"tiger",  emoji:"🐯", name:"虎尿", title:"山林迷惑行为大赏冠军", color:"#e8590c",
+    desc:"虎尿浓烈、霸道、覆盖面积极广，一泡下去方圆三里没有动物敢乱动。据说老虎用尿划定地盘，气场上从不输阵。",
+    read:"你是天生的氛围掌控者，出场自带BGM。你说话不一定多，但每句都有存在感。别人在开会，你在镇场。",
+    stats:{ "气势":95, "气味":92, "稀有度":80, "社交覆盖":88 } },
+  { key:"wolf",   emoji:"🐺", name:"狼尿", title:"深夜emo群聊灌水之王", color:"#5c7cfa",
+    desc:"狼尿带着荒野的凛冽，狼群靠它标记路线，隔着几十公里都能认出自家人，是草原上最讲究团队精神的液体。",
+    read:"你外表高冷内心滚烫，认定的朋友可以两肋插刀。你讨厌无效社交，但对圈内人重情重义到离谱。",
+    stats:{ "气势":85, "气味":78, "稀有度":75, "社交覆盖":70 } },
+  { key:"cat",    emoji:"🐱", name:"猫尿", title:"凌晨三点准时营业的谜之液体", color:"#9775fa",
+    desc:"猫尿浓缩度高、气味穿透力极强且极其记仇——它会精准出现在你最爱的沙发上、你明天要穿的衬衫里。",
+    read:"你看似人畜无害，实则杀伤力精准打击。平时不声不响，一旦出手，所有人都怀疑人生。记仇，但是优雅地记。",
+    stats:{ "气势":60, "气味":98, "稀有度":65, "社交覆盖":50 } },
+  { key:"dog",    emoji:"🐶", name:"狗尿", title:"走到哪标记到哪的社交狂魔", color:"#f59f00",
+    desc:"狗尿是社区新闻分发系统：每一根电线杆都是朋友圈，每棵树都是评论区。狗子出门一次，等于发了三百条动态。",
+    read:"你热情外向，见谁都能唠两句，朋友圈就是你的地盘。你标记过的关系，一个都不舍得放弃。",
+    stats:{ "气势":55, "气味":70, "稀有度":30, "社交覆盖":99 } },
+  { key:"cow",    emoji:"🐮", name:"牛尿", title:"量大管饱的踏实派", color:"#fab005",
+    desc:"牛一天排尿约30升，牛尿量大、稳定、从不迟到。在印度它甚至被当作圣水，堪称液体界的劳模。",
+    read:"你稳重可靠，从不搞虚的。做事虽然不快，但量足、保质、让人放心。你的存在感靠日积月累，不靠突然爆发。",
+    stats:{ "气势":65, "气味":60, "稀有度":25, "社交覆盖":72 } },
+  { key:"horse",  emoji:"🐴", name:"马尿", title:"奔腾系自由主义代表", color:"#e9a30c",
+    desc:"马尿清亮、奔放、产量惊人，草原上跑多远尿多远，主打一个说走就走，从不憋着。",
+    read:"你讨厌被束缚，喜欢直来直去。开心就笑，不爽就说，憋着比杀了你还难受。你的快乐很原始，也很感染人。",
+    stats:{ "气势":75, "气味":55, "稀有度":40, "社交覆盖":66 } },
+  { key:"sheep",  emoji:"🐑", name:"羊尿", title:"温顺合群但有自己的执念", color:"#74c0fc",
+    desc:"羊尿温和低调，羊群走到哪尿到哪，永远跟着大部队，但每一只羊都有自己坚持的那一小块草地。",
+    read:"你性格温和、随遇而安，是团队里最省心的存在。但别以为你没脾气——你坚持的事情，十头牛都拉不回来。",
+    stats:{ "气势":35, "气味":45, "稀有度":35, "社交覆盖":80 } },
+  { key:"pig",    emoji:"🐷", name:"猪尿", title:"快乐哲学代言人", color:"#ffa8a8",
+    desc:"猪尿朴实无华，猪的一生信奉能吃能睡就是福，从不过度内耗，是农场里精神状态最稳定的选手。",
+    read:"你心态极好，天大的事睡一觉就翻篇。别人卷生卷死，你研究午饭吃什么。这不是懒，这是大智慧。",
+    stats:{ "气势":45, "气味":75, "稀有度":20, "社交覆盖":58 } },
+  { key:"chicken",emoji:"🐔", name:"鸡尿", title:"浓缩就是精华的极简主义者", color:"#ff922b",
+    desc:"鸡和鸟一样没有膀胱，尿和便一起排出，主打一个高效、极简、从不浪费时间，活着就是为了下一秒的事。",
+    read:"你是行动派，讨厌拖泥带水。想到就干，说完就办。你的日程表上没有'发呆'这一项，效率高到让同事害怕。",
+    stats:{ "气势":40, "气味":68, "稀有度":30, "社交覆盖":62 } },
+  { key:"duck",   emoji:"🦆", name:"鸭尿", title:"水陆两栖的松弛感大师", color:"#4dabf7",
+    desc:"鸭子一半时间在水里，尿直接排进湖里水乳交融，毫无心理负担。天塌下来先游两圈再说。",
+    read:"你自带松弛感，什么环境都能迅速适应。水逆？不存在的。你的字典里，船到桥头自然直。",
+    stats:{ "气势":42, "气味":40, "稀有度":38, "社交覆盖":76 } },
+  { key:"goose",  emoji:"🦢", name:"鹅尿", title:"全村最能惹事的液体", color:"#20c997",
+    desc:"鹅是禽类扛把子，见谁追谁、逢人便咬，鹅尿随之散布全村，覆盖范围与它的战斗力成正比。",
+    read:"你看着优雅，实际战斗力惊人。平时人不犯我我不犯人，谁惹你一下，能被你追三条街。人类社死界的天花板选手。",
+    stats:{ "气势":88, "气味":50, "稀有度":42, "社交覆盖":74 } },
+  { key:"rabbit", emoji:"🐰", name:"兔尿", title:"奶凶奶凶的软萌系战五渣", color:"#f783ac",
+    desc:"兔尿浑浊偏白，钙含量高，看起来奶乎乎的，和兔子本人一样：外表软萌，实际上轻轻一碰就应激。",
+    read:"你外表软萌无害，内心敏感细腻，很容易被小事击中。但熟人面前你奶凶奶凶的，反差萌本萌。",
+    stats:{ "气势":28, "气味":42, "稀有度":48, "社交覆盖":46 } },
+  { key:"hamster",emoji:"🐹", name:"仓鼠尿", title:"把人生塞进腮帮子的小囤积家", color:"#ffc078",
+    desc:"仓鼠尿量极小、几乎无味，毕竟全部家当和注意力都用在囤粮上了，尿这种事，能省则省。",
+    read:"你精细、会过日子、永远有Plan B。别人月光，你连奶茶优惠券都分类收藏。你的安全感是自己一点点囤出来的。",
+    stats:{ "气势":20, "气味":15, "稀有度":55, "社交覆盖":35 } },
+  { key:"hedgehog",emoji:"🦔", name:"刺猬尿", title:"全身都是边界感的钉子户", color:"#868e96",
+    desc:"刺猬浑身是刺，尿起来小心翼翼，坚持在安全距离外解决，绝不让任何一滴尿暴露在危险半径内。",
+    read:"你边界感极强，刚认识的人觉得你高冷，熟了才发现你软乎。你保护自己的方式，是先把刺竖起来。",
+    stats:{ "气势":48, "气味":35, "稀有度":60, "社交覆盖":28 } },
+  { key:"fox",    emoji:"🦊", name:"狐狸尿", title:"自带香氛的心机玩家", color:"#ff9f43",
+    desc:"狐狸尿气味浓烈独特，狐狸用它传递信息、迷惑对手，是森林里公认的信息战大师，一泡尿全是心眼。",
+    read:"你聪明、敏锐、懂得借力打力。你从不硬刚，但总能赢。你的每一步看似随意，其实心里早有剧本。",
+    stats:{ "气势":70, "气味":82, "稀有度":72, "社交覆盖":64 } },
+  { key:"elephant",emoji:"🐘", name:"大象尿", title:"一泡定乾坤的巨型选手", color:"#adb5bd",
+    desc:"大象一次排尿可达20升，冲下来堪比小型瀑布，方圆十米无一幸存。是大自然最不讲道理的标记方式。",
+    read:"你格局大、能量足，走到哪都自带气场。你的决定影响很多人，你的一泡……啊不，一句话，分量十足。",
+    stats:{ "气势":98, "气味":85, "稀有度":78, "社交覆盖":90 } },
+  { key:"giraffe",emoji:"🦒", name:"长颈鹿尿", title:"高视角俯瞰众生的淡然尊者", color:"#d0bfff",
+    desc:"长颈鹿站着尿尿，高度离谱，视野更离谱。别人还在为一地鸡毛争抢，它已经俯瞰了三个草原之外。",
+    read:"你站得高看得远，很少为小事内耗。朋友吵架你负责一句话点醒众人，你的豁达是刻在脖子长度里的。",
+    stats:{ "气势":72, "气味":58, "稀有度":82, "社交覆盖":60 } },
+  { key:"panda",  emoji:"🐼", name:"熊猫尿", title:"国宝级限量款全球VIP尿", color:"#63e6be",
+    desc:"熊猫尿金贵无比——产出者是全球不到两千只的国宝，每一滴都是限定款，尿都能上热搜的那种。",
+    read:"你是天选之人，自带流量体质。不用争不用抢，好事总会绕着弯找到你。躺平，但躺着躺着就赢了。",
+    stats:{ "气势":62, "气味":48, "稀有度":99, "社交覆盖":85 } },
+  { key:"penguin",emoji:"🐧", name:"企鹅尿", title:"极地喷射式直球选手", color:"#74c0fc",
+    desc:"企鹅排尿伴随排泄可喷射至40厘米开外，在冰天雪地里主打一个简单粗暴，从不弯弯绕绕。",
+    read:"你是直线思维，喜欢就是喜欢，不喜欢就是滚。你的直球偶尔伤人，但所有人都知道：你从不玩阴的。",
+    stats:{ "气势":66, "气味":62, "稀有度":68, "社交覆盖":56 } },
+  { key:"dolphin",emoji:"🐬", name:"海豚尿", title:"海洋学霸的快乐稀释液", color:"#22b8cf",
+    desc:"海豚尿直接融进大海，无迹可寻又无处不在。海豚智商高、爱玩、会安慰同伴，是海洋里的社交天才。",
+    read:"你智商情商双高，快乐会传染，sad会自愈。你的情绪像融进大海的尿——自由，无边界，无法被定义。",
+    stats:{ "气势":58, "气味":10, "稀有度":85, "社交覆盖":92 } },
+  { key:"camel",  emoji:"🐪", name:"骆驼尿", title:"极限省流模式的续航王者", color:"#e8c07a",
+    desc:"骆驼为了保水，尿浓得像糖浆，一滴都不浪费。沙漠里十几公里不喝水照样昂首挺胸，耐力天花板。",
+    read:"你抗压能力爆表，苦日子熬得住，难关扛得下。别人已经在原地崩溃，你还在默默赶路。你是狠人，狠在坚持。",
+    stats:{ "气势":78, "气味":88, "稀有度":65, "社交覆盖":40 } },
+  { key:"kangaroo",emoji:"🦘", name:"袋鼠尿", title:"原地起飞的搞事业狂人", color:"#ff8787",
+    desc:"袋鼠蹦跳前行，尿随时排、随手扬，风里来雨里去全靠弹射起步。澳大利亚草原限定运动员。",
+    read:"你精力旺盛、说干就干，永远在搞事情的路上。你的日常是：起跳、起飞、落地、再来一次。",
+    stats:{ "气势":80, "气味":55, "稀有度":70, "社交覆盖":62 } },
+  { key:"snake",  emoji:"🐍", name:"蛇尿", title:"静音模式潜行的神秘流", color:"#51cf66",
+    desc:"蛇尿量少、无声、无痕，配合蛇的悄无声息，往往是它走了很久你才发现——冷静得让人后背发凉。",
+    read:"你冷静、低调、洞察力惊人。你从不第一个发言，但谁的小动作都逃不过你的眼睛。危险又迷人说的就是你。",
+    stats:{ "气势":74, "气味":52, "稀有度":88, "社交覆盖":30 } },
+  { key:"frog",   emoji:"🐸", name:"青蛙尿", title:"雨季限定营业的气氛组", color:"#69db7c",
+    desc:"青蛙只在雨季疯狂营业，呱声震天，尿随意排进池塘与万家灯火共舞。平时消失，下雨封神。",
+    read:"你平时深藏功与名，一到自己擅长的场合瞬间支棱起来，是典型的关键局气氛组天花板。平时隐身，关键时刻惊艳全场。",
+    stats:{ "气势":52, "气味":25, "稀有度":58, "社交覆盖":68 } },
+];
+
+/* ================= 13 道阴暗抽象题 ================= */
+/* 每个选项 boost 若干动物 */
+const QUESTIONS = [
+  { q:"凌晨三点，你盯着天花板，房间里安静得能听见自己的心跳。此刻你脑子里第一个念头是：",
+    opts:[
+      { t:"白天那句没接好的话，在心里重播了第 47 遍", a:["cat","hedgehog","rabbit"] },
+      { t:"万物终将归于虚无，包括我，包括这只闹钟", a:["snake","giraffe","camel"] },
+      { t:"打开手机，看看有没有人给我发消息（没有）", a:["dog","hamster","sheep"] },
+      { t:"爬起来煮个泡面，饥饿比存在主义更真实", a:["pig","cow","frog"] },
+    ]},
+  { q:"如果所有咽下去的委屈都会凝固成一颗石头，你身体里现在：",
+    opts:[
+      { t:"已经是一座山了，我靠着它睡觉", a:["camel","cow","hedgehog"] },
+      { t:"一颗也没有，我当场就泼出去了，专泼惹我的人", a:["goose","tiger","wolf"] },
+      { t:"都被我偷偷埋进了心里的地下室，钥匙只有一把", a:["cat","snake","fox"] },
+      { t:"我把石头磨碎了掺进笑容里，没人看得出来", a:["dolphin","duck","panda"] },
+    ]},
+  { q:"深夜无人的街道，你身后传来脚步声，越来越近。你：",
+    opts:[
+      { t:"不回头。该来的总会来，我提前认命", a:["sheep","rabbit","hedgehog"] },
+      { t:"放慢脚步，让对方走到我视野死角里，再突然转身", a:["snake","fox","cat"] },
+      { t:"直接转身对视——想吓我？先问问我这身气势", a:["tiger","goose","elephant"] },
+      { t:"开始原地蹦跳加速，用混乱让对方陷入困惑", a:["kangaroo","horse","duck"] },
+    ]},
+  { q:"所有人都在笑，而你笑不出来。你选择：",
+    opts:[
+      { t:"跟着扯一个，练习了二十年的标准假笑即刻上线", a:["dolphin","dog","chicken"] },
+      { t:"不笑。我的脸凭什么为气氛服务", a:["cat","snake","wolf"] },
+      { t:"躲进厕所隔间，享受五分钟合法的消失", a:["hedgehog","hamster","camel"] },
+      { t:"大声笑得比谁都夸张，用音量盖过心里那个声音", a:["goose","panda","pig"] },
+    ]},
+  { q:"你内心最深处那个房间，锁着的笼子里装的东西是：",
+    opts:[
+      { t:"一只竖着刺的小兽，谁靠近就炸谁，包括自己人", a:["hedgehog","cat","rabbit"] },
+      { t:"一团浓雾，连我自己都看不清里面是什么", a:["snake","fox","giraffe"] },
+      { t:"一堆存粮，以备世界随时塌下来那天", a:["hamster","camel","cow"] },
+      { t:"一只会在月光下唱歌的动物，唱完就继续装没事", a:["wolf","dolphin","frog"] },
+    ]},
+  { q:"如果可以从世界上悄悄消失，不被任何人发现，你会选择：",
+    opts:[
+      { t:"变成凌晨四点的雾，附着在没关紧的窗缝上", a:["cat","snake","dolphin"] },
+      { t:"变成一片草原，让所有动物踩过我，我才算活着", a:["cow","sheep","elephant"] },
+      { t:"才不消失，我要变成大新闻，消失也得消失得轰轰烈烈", a:["tiger","goose","kangaroo"] },
+      { t:"变成自己被窝里的一个褶皱，谁也别想找到我", a:["hedgehog","hamster","panda"] },
+    ]},
+  { q:"别人问你「你还好吗」的时候，你脑子里实际发生的是：",
+    opts:[
+      { t:"一段漫长的、无处安放的独白，但出口只有两个字：还行", a:["cat","hedgehog","snake"] },
+      { t:"警报响了，但警报器电池十年前就拔了", a:["camel","wolf","fox"] },
+      { t:"瞬间精神焕发——终于有人问了！开始倾泻三小时", a:["dog","duck","sheep"] },
+      { t:"好啊好啊，然后反问对方吃了吗，转移话题如移形换影", a:["frog","panda","pig"] },
+    ]},
+  { q:"你的秘密一般藏在哪：",
+    opts:[
+      { t:"藏在笑点里，我讲的每个笑话其实都是真事", a:["dolphin","frog","duck"] },
+      { t:"埋得很深很深，深到我自己都要靠定位才能找到", a:["hamster","snake","hedgehog"] },
+      { t:"没有秘密，我心里的事全写在我敌对名单上", a:["goose","wolf","tiger"] },
+      { t:"摊开来放，反正也没有人真正在听", a:["cow","sheep","elephant"] },
+    ]},
+  { q:"世界末日那天，大家都往外逃。你不想逃，你想：",
+    opts:[
+      { t:"站在原地，最后一次认真看看这个糟糕又好看的世界", a:["giraffe","panda","camel"] },
+      { t:"去找那个一直没敢联系的人，把话说完", a:["wolf","dolphin","rabbit"] },
+      { t:"去惹一次平时不敢惹的人，反正都要完了", a:["goose","tiger","kangaroo"] },
+      { t:"回被窝躺平，末日而已，打不倒一个躺平的人", a:["pig","cat","hedgehog"] },
+    ]},
+  { q:"深夜冰箱里只剩最后一盒食物，你和另一个饿着的灵魂对视。你：",
+    opts:[
+      { t:"假装礼貌谦让，然后在对方伸手前 0.1 秒出手", a:["fox","cat","chicken"] },
+      { t:"直接分了，但把大的那半默默推给对方", a:["dog","cow","elephant"] },
+      { t:"护食低吼，此时的我不是我，是领地意识本身", a:["wolf","tiger","hedgehog"] },
+      { t:"建议一起吃，边吃边聊，孤独需要共犯", a:["duck","frog","panda"] },
+    ]},
+  { q:"如果眼泪可以卖钱，以你的产量：",
+    opts:[
+      { t:"早就财富自由了，只是没人知道我夜里的汇率", a:["rabbit","wolf","hedgehog"] },
+      { t:"库存常年为零，我的水份都用来冷脸了", a:["snake","camel","cat"] },
+      { t:"会在别人面前扭头憋回去，独处时再偷偷结算", a:["hamster","sheep","fox"] },
+      { t:"当场哭给全世界看，眼泪要卖就卖现场限量款", a:["dog","frog","duck"] },
+    ]},
+  { q:"你做了一个梦：所有认识你的人围着你，一言不发。你醒来后：",
+    opts:[
+      { t:"无所谓，反正他们围着的可能只是我的传说", a:["tiger","fox","giraffe"] },
+      { t:"心里发毛，反复回想最近是不是哪里得罪人了", a:["rabbit","hamster","hedgehog"] },
+      { t:"冷静分析这个梦的三种心理学解释，然后忘掉", a:["snake","camel","cow"] },
+      { t:"给朋友发消息：梦见你们了，是不是想我了", a:["dog","dolphin","panda"] },
+    ]},
+  { q:"最后一题，也是阴暗面的尽头。如果重生必须携带一样东西进入下一世，你选：",
+    opts:[
+      { t:"带上一身刺，这次谁也别想再轻易碰到我", a:["hedgehog","cat","snake"] },
+      { t:"带上獠牙，上一世忍的，这一世一口一口还回去", a:["tiger","wolf","goose"] },
+      { t:"带上一个塞满秘密和干粮的腮帮子，安全感自给自足", a:["hamster","camel","cow"] },
+      { t:"带上笑声，哪怕世界是暗的，我也要在暗处大笑", a:["dolphin","frog","kangaroo"] },
+    ]},
+];
+
+/* ================= 状态与逻辑 ================= */
+let qIndex = 0;
+let scores = {};
+const KEYS = ANIMALS.map(a => a.key);
+
+function showPage(id) {
+  ["page-cover","page-quiz","page-result"].forEach(p =>
+    document.getElementById(p).classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function startQuiz() {
+  qIndex = 0;
+  scores = {};
+  showPage("page-quiz");
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[qIndex];
+  document.getElementById("progress-text").textContent = `第 ${qIndex + 1} / ${QUESTIONS.length} 题`;
+  document.getElementById("bar-fill").style.width = ((qIndex) / QUESTIONS.length * 100) + "%";
+  const card = document.getElementById("q-card");
+  const letters = ["A","B","C","D"];
+  card.style.animation = "none"; void card.offsetWidth; card.style.animation = "";
+  card.innerHTML = `
+    <div class="q-no">QUESTION ${String(qIndex + 1).padStart(2, "0")}</div>
+    <div class="q-title">${q.q}</div>
+    ${q.opts.map((o, i) => `
+      <button class="opt" onclick="answer(${i})">
+        <span class="tag">${letters[i]}</span><span>${o.t}</span>
+      </button>`).join("")}
+  `;
+}
+
+function answer(i) {
+  const opt = QUESTIONS[qIndex].opts[i];
+  opt.a.forEach(k => { scores[k] = (scores[k] || 0) + 1; });
+  qIndex++;
+  document.getElementById("bar-fill").style.width = (qIndex / QUESTIONS.length * 100) + "%";
+  if (qIndex < QUESTIONS.length) {
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  // 找最高分（平分随机决胜）
+  let best = KEYS.filter(k => scores[k] === Math.max(...KEYS.map(x => scores[x] || 0)));
+  const winner = ANIMALS.find(a => a.key === best[Math.floor(Math.random() * best.length)]);
+  const s = winner.stats;
+
+  const bottleSVG = `
+  <svg class="bottle" viewBox="0 0 120 170" xmlns="http://www.w3.org/2000/svg">
+    <rect x="48" y="4" width="24" height="16" rx="4" fill="#c9a86a"/>
+    <path d="M44 20 L76 20 L84 52 L84 150 Q84 162 72 162 L48 162 Q36 162 36 150 L36 52 Z"
+      fill="rgba(255,255,255,.55)" stroke="#c9a86a" stroke-width="3"/>
+    <path d="M40 96 Q60 88 80 96 L80 150 Q80 158 72 158 L48 158 Q40 158 40 150 Z"
+      fill="${winner.color}" opacity=".85"/>
+    <rect x="44" y="66" width="32" height="24" rx="4" fill="#fff" stroke="#e0c79a" stroke-width="2"/>
+    <text x="60" y="82" text-anchor="middle" font-size="11" font-weight="bold" fill="#a5822f">尿样</text>
+    <circle cx="52" cy="120" r="4" fill="#fff" opacity=".6"/>
+    <circle cx="68" cy="136" r="3" fill="#fff" opacity=".5"/>
+    <circle cx="58" cy="146" r="2.5" fill="#fff" opacity=".5"/>
+  </svg>`;
+
+  document.getElementById("result-card").innerHTML = `
+    <div class="result-kicker">★ 鉴 定 结 果 ★</div><br>
+    <div class="result-emoji">${winner.emoji}</div>
+    <div class="result-name">${winner.name}</div>
+    <div><span class="result-title" style="background:linear-gradient(135deg, ${winner.color}, #d6336c)">${winner.title}</span></div>
+    ${bottleSVG}
+    <div class="result-rank">综合匹配率 ${(70 + Math.random() * 29).toFixed(1)}% · 本命尿型已锁定，无法退换</div>
+
+    <div class="section">
+      <h3>💧 尿的档案</h3>
+      <p>${winner.desc}</p>
+    </div>
+    <div class="section">
+      <h3>🔮 尿格解读</h3>
+      <p>${winner.read}</p>
+    </div>
+    <div class="stats">
+      ${Object.entries(s).map(([k, v], i) => `
+        <div class="stat-row">
+          <div class="stat-label">${k}</div>
+          <div class="stat-bar"><div class="stat-fill" style="width:${v}%; background:linear-gradient(90deg, ${winner.color}, #d6336c); animation-delay:${i * 0.12}s"></div></div>
+          <div class="stat-val">${v}</div>
+        </div>`).join("")}
+    </div>
+    <div class="btn-row">
+      <button class="btn-sec" onclick="startQuiz()">再测一次</button>
+      <button class="btn-sec" onclick="shareResult('${winner.name}')">复制结果炫耀</button>
+    </div>
+    <div class="share-note">本次鉴定由轮回管理总局尿型科友情提供 · 24 种尿型 · 抽到熊猫尿的请自觉炫耀</div>
+  `;
+  showPage("page-result");
+}
+
+function shareResult(name) {
+  const text = `我在「重生之你是什么动物的尿」测试中，鉴定为本命尿型：${name}！快来测测你是什么尿 →`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => alert("已复制！快去粘贴给朋友，让他们也来鉴定尿型～"))
+      .catch(() => alert(text));
+  } else { alert(text); }
+}
+</script>
+</body>
+</html>
